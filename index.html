@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stopwatch & Clock</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f4f4f4;
+      margin-top: 60px;
+    }
+    h1 {
+      margin-bottom: 40px;
+    }
+    .clock, .stopwatch {
+      font-size: 2em;
+      margin: 20px 0;
+    }
+    .buttons button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>⏰ Clock & Stopwatch</h1>
+
+  <div class="clock" id="clock">00:00:00</div>
+
+  <div class="stopwatch" id="stopwatch">00:00:00</div>
+
+  <div class="buttons">
+    <button onclick="startStopwatch()">Start</button>
+    <button onclick="stopStopwatch()">Stop</button>
+    <button onclick="resetStopwatch()">Reset</button>
+  </div>
+
+  <script>
+    // Digital Clock
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      document.getElementById("clock").textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call
+
+    // Stopwatch Variables
+    let startTime, updatedTime, difference, timerInterval;
+    let running = false;
+
+    function updateStopwatch() {
+      updatedTime = new Date().getTime();
+      difference = updatedTime - startTime;
+
+      let hrs = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      let mins = Math.floor((difference / (1000 * 60)) % 60);
+      let secs = Math.floor((difference / 1000) % 60);
+
+      document.getElementById("stopwatch").textContent =
+        `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+    }
+
+    function pad(unit) {
+      return ("0" + unit).slice(-2);
+    }
+
+    function startStopwatch() {
+      if (!running) {
+        running = true;
+        startTime = new Date().getTime() - (difference || 0);
+        timerInterval = setInterval(updateStopwatch, 100);
+      }
+    }
+
+    function stopStopwatch() {
+      if (running) {
+        running = false;
+        clearInterval(timerInterval);
+      }
+    }
+
+    function resetStopwatch() {
+      running = false;
+      clearInterval(timerInterval);
+      difference = 0;
+      document.getElementById("stopwatch").textContent = "00:00:00";
+    }
+  </script>
+
+</body>
+</html>
